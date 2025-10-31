@@ -6,10 +6,14 @@ spring:
     hibernate:
       ddl-auto: update
     show-sql: true
+    properties:
+      hibernate:
+        formatSql: true
+        dialect: org.hibernate.dialect.PostgreSQLDialect
 
   datasource:
     driverClassName: org.postgresql.Driver
-    url: jdbc:postgresql://localhost:5432/easy_bank
+    url: ${SPRING_DATASOURCE_URL}
     username: postgres
     password: postgres
 

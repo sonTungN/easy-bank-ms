@@ -40,8 +40,6 @@ services:
       POSTGRES_DB: easy_bank
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
-    volumes:
-      - ".postgres-data:/var/lib/postgresql/data"
     networks:
       - easybank
 
