@@ -23,7 +23,28 @@ services:
       SPRING_DATASOURCE_USERNAME: postgres
       SPRING_DATASOURCE_PASSWORD: postgres
     depends_on:
-      - account-postgres
+      account-postgres:
+        condition: service_healthy
+    deploy:
+      resources:
+        limits:
+          memory: 700m
+    networks:
+      - easybank
+
+  card-service:
+    build: "./CardService"
+    image: "easybank/card:latest"
+    container_name: "card-ms"
+    ports:
+      - "8070:8070"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://card-mysql:3306/easy_bank
+      SPRING_DATASOURCE_USERNAME: springstudent
+      SPRING_DATASOURCE_PASSWORD: springstudent
+    depends_on:
+      card-mysql:
+        condition: service_healthy
     deploy:
       resources:
         limits:
@@ -32,7 +53,6 @@ services:
       - easybank
 
   account-postgres:
-#    build: "./db"
     image: "postgres:latest"
     container_name: "account-postgres-db"
     ports:
@@ -41,9 +61,30 @@ services:
       POSTGRES_DB: easy_bank
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
-#    volumes:
-#      - ".postgres-data:/var/lib/postgresql/data"
-#      - "./db/init.sql:/docker-entrypoint-initdb.d/init.sql"
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U postgres" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - easybank
+
+  card-mysql:
+    image: "mysql:latest"
+    container_name: "card-sql-db"
+    ports:
+      - "3307:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: 123
+      MYSQL_DATABASE: easy_bank
+      MYSQL_USER: springstudent
+      MYSQL_PASSWORD: springstudent
+    healthcheck: # Add health check
+      test: [ "CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p123" ]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 30s
     networks:
       - easybank
 
