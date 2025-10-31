@@ -32,6 +32,7 @@ services:
       - easybank
 
   account-postgres:
+#    build: "./db"
     image: "postgres:latest"
     container_name: "account-postgres-db"
     ports:
@@ -40,8 +41,9 @@ services:
       POSTGRES_DB: easy_bank
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
-    volumes:
-      - ".postgres-data:/var/lib/postgresql/data"
+#    volumes:
+#      - ".postgres-data:/var/lib/postgresql/data"
+#      - "./db/init.sql:/docker-entrypoint-initdb.d/init.sql"
     networks:
       - easybank
 
