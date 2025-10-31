@@ -1,0 +1,14 @@
+spring:
+  datasource:
+    url: jdbc:mysql://localhost:3306/w10_tut
+    driverClassName: com.mysql.cj.jdbc.Driver
+    username: springstudent
+    password: springstudent
+
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: update
+
+server:
+  port: 8070
