@@ -15,5 +15,44 @@ spring:
       ddl-auto: update
     show-sql: true
 
+  profiles:
+    active:
+      - "prod"
+
+build:
+  version: "Default"
+
 server:
   port: 8090
+#  servlet:
+#    context-path: /loans
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+
+  endpoint:
+    shutdown:
+      access: unrestricted
+
+  info:
+    env:
+      enabled: true
+
+eureka:
+  instance:
+    prefer-ip-address: true
+
+  client:
+    fetch-registry: true
+    register-with-eureka: true
+    service-url:
+      defaultZone: http://localhost:8070/eureka/
+
+info:
+  app:
+    name: "loans"
+    description: "Banking Loans Application"
+    version: "1.0.0"

@@ -7,6 +7,6 @@ import java.util.List;
 
 public interface ICustomerService {
     List<Customer> getAllCustomers();
-    CustomerDto getCustomerByEmail(String email);
-    boolean deleteCustomerByEmail(String email);
+    CustomerDto getCustomerByMobileNumber(String mobileNumber);
+    boolean deleteCustomerByMobileNumber(String mobileNumber);
 }

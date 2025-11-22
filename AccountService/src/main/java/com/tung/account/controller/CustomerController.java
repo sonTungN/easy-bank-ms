@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/s1")
 public class CustomerController {
     private ICustomerService customerService;
 
@@ -28,16 +27,16 @@ public class CustomerController {
                 .body(customerService.getAllCustomers());
     }
 
-    @GetMapping("/customer/{email}")
-    public ResponseEntity<CustomerDto> getCustomerByEmail(@PathVariable String email) {
+    @GetMapping("/customer/{mobileNumber}")
+    public ResponseEntity<CustomerDto> getCustomerByMobileNumber(@PathVariable String mobileNumber) {
         return ResponseEntity
                 .status(HttpStatus.OK)
-                .body(customerService.getCustomerByEmail(email));
+                .body(customerService.getCustomerByMobileNumber(mobileNumber));
     }
 
-    @DeleteMapping("/customer/{email}")
-    public ResponseEntity<ResponseDto> deleteCustomerByEmail(@PathVariable String email) {
-        boolean isDeleted = customerService.deleteCustomerByEmail(email);
+    @DeleteMapping("/customer/{mobileNumber}")
+    public ResponseEntity<ResponseDto> deleteCustomerByMobileNumber(@PathVariable String mobileNumber) {
+        boolean isDeleted = customerService.deleteCustomerByMobileNumber(mobileNumber);
 
         if (isDeleted) {
             return ResponseEntity
@@ -48,7 +47,5 @@ public class CustomerController {
                     .status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(new ResponseDto("500", "Failed to delete customer data"));
         }
-
-
     }
 }

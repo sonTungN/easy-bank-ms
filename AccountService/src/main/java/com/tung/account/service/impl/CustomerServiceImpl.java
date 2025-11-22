@@ -35,9 +35,9 @@ public class CustomerServiceImpl implements ICustomerService {
     }
 
     @Override
-    public CustomerDto getCustomerByEmail(String email) {
-        Customer checkedCustomer = customerRepository.findCustomerByEmail(email).orElseThrow(
-                () -> new ResourceNotFoundException("Customer", "email", email)
+    public CustomerDto getCustomerByMobileNumber(String mobileNumber) {
+        Customer checkedCustomer = customerRepository.findCustomerByMobileNumber(mobileNumber).orElseThrow(
+                () -> new ResourceNotFoundException("Customer", "Mobile Number", mobileNumber)
         );
         Account account = accountRepository.findAccountByCustomerId(checkedCustomer.getCustomerId()).orElseThrow(
                 () -> new ResourceNotFoundException("Account", "customerId", checkedCustomer.getCustomerId().toString())
@@ -52,10 +52,10 @@ public class CustomerServiceImpl implements ICustomerService {
     @Override
     @Transactional
     @Modifying
-    public boolean deleteCustomerByEmail(String email) {
-        Customer customer = customerRepository.findCustomerByEmail(email)
+    public boolean deleteCustomerByMobileNumber(String mobileNumber) {
+        Customer customer = customerRepository.findCustomerByMobileNumber(mobileNumber)
                 .orElseThrow(
-                        () -> new ResourceNotFoundException("Customer", "email", email)
+                        () -> new ResourceNotFoundException("Customer", "Mobile Number", mobileNumber)
                 );
 
         customerRepository.deleteById(customer.getCustomerId());

@@ -15,6 +15,8 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Pattern;
 import lombok.AllArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -32,12 +34,25 @@ import java.util.List;
         description = "CRUD REST APIs in EazyBank to CREATE, UPDATE, FETCH AND DELETE card details"
 )
 @RestController
-@RequestMapping(path = "/s3", produces = {MediaType.APPLICATION_JSON_VALUE})
-@AllArgsConstructor
 @Validated
 public class CardsController {
 
     private ICardsService iCardsService;
+
+    @Value("${build.version}")
+    private String buildVersion;
+
+    @Autowired
+    public CardsController(ICardsService iCardsService) {
+        this.iCardsService = iCardsService;
+    }
+
+    @GetMapping("/build-version")
+    public ResponseEntity<String> getBuildVersion() {
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(buildVersion);
+    }
 
     @Operation(
             summary = "Create Card REST API",

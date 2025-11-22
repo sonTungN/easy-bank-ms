@@ -3,7 +3,14 @@
   <component name="CompilerConfiguration">
     <annotationProcessing>
       <profile default="true" name="Default" enabled="true" />
-      <profile name="Annotation profile for CardService" enabled="true">
+      <profile name="Maven default annotation processors profile" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <module name="config-server" />
+        <module name="eureka" />
+      </profile>
+      <profile name="Annotation profile for AccountService" enabled="true">
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
@@ -11,8 +18,8 @@
           <entry name="$MAVEN_REPOSITORY$/org/projectlombok/lombok/1.18.42/lombok-1.18.42.jar" />
         </processorPath>
         <module name="CardService" />
-        <module name="loan" />
         <module name="account" />
+        <module name="loan" />
       </profile>
     </annotationProcessing>
   </component>
@@ -20,6 +27,8 @@
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
       <module name="CardService" options="-parameters" />
       <module name="account" options="-parameters" />
+      <module name="config-server" options="-parameters" />
+      <module name="eureka" options="-parameters" />
       <module name="loan" options="-parameters" />
     </option>
   </component>

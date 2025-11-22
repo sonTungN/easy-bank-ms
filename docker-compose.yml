@@ -37,7 +37,7 @@ services:
     image: "easybank/card:latest"
     container_name: "card-ms"
     ports:
-      - "8070:8070"
+      - "9000:9000"
     environment:
       SPRING_DATASOURCE_URL: jdbc:mysql://card-mysql:3306/easy_bank
       SPRING_DATASOURCE_USERNAME: springstudent

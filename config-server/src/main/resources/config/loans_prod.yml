@@ -1,0 +1,11 @@
+build:
+  version: "Loans-PROD"
+
+accounts:
+  message: "Welcome to LoanService related local APIs"
+  contactDetails:
+    name: "Son Tung"
+    email: "123@gmail.com"
+  onCallSupport:
+    - 0123123123
+    - 0234234234

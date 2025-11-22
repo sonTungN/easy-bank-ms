@@ -1,6 +1,6 @@
 # dockerfile
 # Build stage
-FROM maven:3.9.4-eclipse-temurin-21 as builder
+FROM maven:3.9.4-eclipse-temurin-21 AS builder
 WORKDIR /build
 COPY pom.xml mvnw* ./
 COPY .mvn .mvn
@@ -8,7 +8,7 @@ COPY src src
 RUN mvn -B -DskipTests package
 
 # Runtime stage
-FROM openjdk:21-jdk-slim
+FROM eclipse-temurin:21-jre-alpine
 LABEL maintainer="easybanks.com"
 WORKDIR /app
 # copy the produced jar (adjust artifact name if different)

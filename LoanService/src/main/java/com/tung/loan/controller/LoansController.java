@@ -8,21 +8,31 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.Pattern;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping(path = "/s2")
 @Validated
 public class LoansController {
 
     private ILoansService iLoansService;
 
+    @Value("${build.version}")
+    private String buildVersion;
+
     @Autowired
     public LoansController(ILoansService iLoansService) {
         this.iLoansService = iLoansService;
+    }
+
+    @GetMapping("/build-version")
+    public ResponseEntity<String> getBuildVersion() {
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(buildVersion);
     }
 
     @PostMapping("/create")

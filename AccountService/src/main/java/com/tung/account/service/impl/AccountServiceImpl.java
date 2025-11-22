@@ -37,7 +37,7 @@ public class AccountServiceImpl implements IAccountService {
     @Override
     @Transactional
     public void createAccount(CustomerDto customerDto) {
-        Optional<Customer> checkedCustomer = customerRepository.findCustomerByEmail(customerDto.getEmail());
+        Optional<Customer> checkedCustomer = customerRepository.findCustomerByMobileNumber(customerDto.getMobileNumber());
         if (checkedCustomer.isPresent()) {
             throw new CustomerAlreadyExistedException("Customer email: " + customerDto.getEmail() + " is already existed");
         }
