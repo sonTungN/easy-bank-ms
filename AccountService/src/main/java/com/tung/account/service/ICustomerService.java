@@ -1,5 +1,6 @@
 package com.tung.account.service;
 
+import com.tung.account.dto.CustomerDetailsDto;
 import com.tung.account.dto.CustomerDto;
 import com.tung.account.entity.Customer;
 
@@ -9,4 +10,5 @@ public interface ICustomerService {
     List<Customer> getAllCustomers();
     CustomerDto getCustomerByMobileNumber(String mobileNumber);
     boolean deleteCustomerByMobileNumber(String mobileNumber);
+    CustomerDetailsDto getCustomerDetails(String mobileNumber);
 }

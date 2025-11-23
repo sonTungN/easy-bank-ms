@@ -1,5 +1,6 @@
 package com.tung.account.controller;
 
+import com.tung.account.dto.CustomerDetailsDto;
 import com.tung.account.dto.CustomerDto;
 import com.tung.account.dto.common.ResponseDto;
 import com.tung.account.entity.Customer;
@@ -47,5 +48,12 @@ public class CustomerController {
                     .status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(new ResponseDto("500", "Failed to delete customer data"));
         }
+    }
+
+    @GetMapping("/customer-details")
+    public ResponseEntity<CustomerDetailsDto> fetchCustomerDetails(@RequestParam String mobileNumber) {
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(customerService.getCustomerDetails(mobileNumber));
     }
 }
