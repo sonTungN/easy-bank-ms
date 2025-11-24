@@ -1,0 +1,36 @@
+spring:
+  application:
+    name: gateway
+  config:
+    import: "optional:configserver:http://localhost:8071/"
+  cloud:
+    gateway:
+      server:
+        webflux:
+          discovery:
+            locator:
+#              enabled: true
+              # Set as false for customized routes and ignore the default routes
+              enabled: false
+              lower-case-service-id: true
+
+# Gateway port will be defined in config-server
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+  endpoint:
+    gateway:
+      access: unrestricted
+  info:
+    env:
+      enabled: true
+
+
+# Gateway Eureka setup will be defined in config-server
+info:
+  app:
+    name: "gateway"
+    description: "Banking Gateway Application"
+    version: "1.0.0"

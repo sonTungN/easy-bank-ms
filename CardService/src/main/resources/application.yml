@@ -1,14 +1,17 @@
 spring:
-  datasource:
-    url: jdbc:mysql://localhost:3306/easy_bank
-    driverClassName: com.mysql.cj.jdbc.Driver
-    username: springstudent
-    password: springstudent
+  application:
+    name: loan-service
 
   jpa:
-    show-sql: true
     hibernate:
       ddl-auto: update
+    show-sql: true
+
+  datasource:
+    driverClassName: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:5432/easy_bank
+    username: postgres
+    password: postgres
 
 build:
   version: "Default"

@@ -1,11 +1,11 @@
 package com.tung.loan.mapper;
 
 import com.tung.loan.dto.LoansDto;
-import com.tung.loan.entity.Loan;
+import com.tung.loan.entity.Loans;
 
 public class LoansMapper {
 
-    public static LoansDto mapToLoansDto(Loan loan, LoansDto loansDto) {
+    public static LoansDto mapToLoansDto(Loans loan, LoansDto loansDto) {
         loansDto.setLoanNumber(loan.getLoanNumber());
         loansDto.setLoanType(loan.getLoanType());
         loansDto.setMobileNumber(loan.getMobileNumber());
@@ -15,7 +15,7 @@ public class LoansMapper {
         return loansDto;
     }
 
-    public static Loan mapToLoans(LoansDto loansDto, Loan loan) {
+    public static Loans mapToLoans(LoansDto loansDto, Loans loan) {
         loan.setLoanNumber(loansDto.getLoanNumber());
         loan.setLoanType(loansDto.getLoanType());
         loan.setMobileNumber(loansDto.getMobileNumber());

@@ -1,16 +1,16 @@
 package com.tung.loan.repository;
 
-import com.tung.loan.entity.Loan;
+import com.tung.loan.entity.Loans;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
 
 @Repository
-public interface LoansRepository extends JpaRepository<Loan, Long> {
+public interface LoansRepository extends JpaRepository<Loans, Long> {
 
-    Optional<Loan> findByMobileNumber(String mobileNumber);
+    Optional<Loans> findByMobileNumber(String mobileNumber);
 
-    Optional<Loan> findByLoanNumber(String loanNumber);
+    Optional<Loans> findByLoanNumber(String loanNumber);
 
 }
