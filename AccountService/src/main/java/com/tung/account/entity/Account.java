@@ -19,4 +19,7 @@ public class Account extends BaseEntity {
     private Long customerId;
 
     private String accountType;
+
+    @Column(name = "communication_sw")
+    private Boolean communicationSwitch;
 }

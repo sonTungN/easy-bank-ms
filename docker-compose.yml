@@ -1,16 +1,46 @@
 services:
-  loan-service:
-    build: "./LoanService"
-    image: "easybank/loan:latest"
-    container_name: "loan-ms"
+  config-server:
+    build: "./config-server"
+    image: "easybank/config-server:latest"
+    container_name: "config-server-ms"
     ports:
-      - "8090:8090"
+      - "8071:8071"
     deploy:
       resources:
         limits:
           memory: 700m
     networks:
       - easybank
+    healthcheck:
+      test: "curl --fail --silent localhost:8071/actuator/health/readiness | grep UP || exit 1"
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 10s
+
+  eureka:
+    build: "./eureka"
+    image: "easybank/eureka:latest"
+    container_name: "eureka-ms"
+    ports:
+      - "8070:8070"
+    depends_on:
+      config-server:
+        condition: service_healthy
+    environment:
+      SPRING_CONFIG_IMPORT: optional:configserver:http://config-server:8071/
+    deploy:
+      resources:
+        limits:
+          memory: 700m
+    networks:
+      - easybank
+    healthcheck:
+      test: "curl --fail --silent localhost:8070/actuator/health/readiness | grep UP || exit 1"
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 10s
 
   account-service:
     build: "./AccountService"
@@ -19,11 +49,23 @@ services:
     ports:
       - "8080:8080"
     environment:
-      SPRING_DATASOURCE_URL: jdbc:postgresql://account-postgres:5432/easy_bank
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/easy_bank
       SPRING_DATASOURCE_USERNAME: postgres
       SPRING_DATASOURCE_PASSWORD: postgres
+      SPRING_CONFIG_IMPORT: optional:configserver:http://config-server:8071/
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eureka:8070/eureka/
+      SPRING_RABBITMQ_HOST: rabbitmq
+      SPRING_RABBITMQ_PORT: 5672
+      SPRING_RABBITMQ_USERNAME: guest
+      SPRING_RABBITMQ_PASSWORD: guest
     depends_on:
-      account-postgres:
+      postgres:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+      config-server:
+        condition: service_healthy
+      eureka:
         condition: service_healthy
     deploy:
       resources:
@@ -31,6 +73,46 @@ services:
           memory: 700m
     networks:
       - easybank
+    healthcheck:
+      test: "curl --fail --silent localhost:8080/actuator/health/readiness | grep UP || exit 1"
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 10s
+
+  loan-service:
+    build: "./LoanService"
+    image: "easybank/loan:latest"
+    container_name: "loan-ms"
+    ports:
+      - "8090:8090"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/easy_bank
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: postgres
+      SPRING_CONFIG_IMPORT: optional:configserver:http://config-server:8071/
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eureka:8070/eureka/
+    depends_on:
+      postgres:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+      config-server:
+        condition: service_healthy
+      eureka:
+        condition: service_healthy
+    deploy:
+      resources:
+        limits:
+          memory: 700m
+    networks:
+      - easybank
+    healthcheck:
+      test: "curl --fail --silent localhost:8090/actuator/health/readiness | grep UP || exit 1"
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 10s
 
   card-service:
     build: "./CardService"
@@ -39,11 +121,19 @@ services:
     ports:
       - "9000:9000"
     environment:
-      SPRING_DATASOURCE_URL: jdbc:mysql://card-mysql:3306/easy_bank
-      SPRING_DATASOURCE_USERNAME: springstudent
-      SPRING_DATASOURCE_PASSWORD: springstudent
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/easy_bank
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: postgres
+      SPRING_CONFIG_IMPORT: optional:configserver:http://config-server:8071/
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eureka:8070/eureka/
     depends_on:
-      card-mysql:
+      postgres:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+      config-server:
+        condition: service_healthy
+      eureka:
         condition: service_healthy
     deploy:
       resources:
@@ -51,10 +141,50 @@ services:
           memory: 700m
     networks:
       - easybank
+    healthcheck:
+      test: "curl --fail --silent localhost:9000/actuator/health/readiness | grep UP || exit 1"
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 10s
 
-  account-postgres:
+  gateway:
+    build: "./gateway"
+    image: "easybank/gateway:latest"
+    container_name: "gateway-ms"
+    ports:
+      - "8072:8072"
+    environment:
+      SPRING_CONFIG_IMPORT: optional:configserver:http://config-server:8071/
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eureka:8070/eureka/
+      EUREKA_SERVICEURL: eureka
+    depends_on:
+      config-server:
+        condition: service_healthy
+      eureka:
+        condition: service_healthy
+      account-service:
+        condition: service_healthy
+      loan-service:
+        condition: service_healthy
+      card-service:
+        condition: service_healthy
+    deploy:
+      resources:
+        limits:
+          memory: 700m
+    networks:
+      - easybank
+    healthcheck:
+      test: "curl --fail --silent localhost:8072/actuator/health/readiness | grep UP || exit 1"
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 10s
+
+  postgres:
     image: "postgres:latest"
-    container_name: "account-postgres-db"
+    container_name: "easybank-postgres-db"
     ports:
       - "5433:5432"
     environment:
@@ -69,22 +199,43 @@ services:
     networks:
       - easybank
 
-  card-mysql:
-    image: "mysql:latest"
-    container_name: "card-sql-db"
+  rabbitmq:
+    image: "rabbitmq:3-management"
+    container_name: "easybank-rabbitmq"
     ports:
-      - "3307:3306"
+      - "5672:5672"
+      - "15672:15672"
     environment:
-      MYSQL_ROOT_PASSWORD: 123
-      MYSQL_DATABASE: easy_bank
-      MYSQL_USER: springstudent
-      MYSQL_PASSWORD: springstudent
-    healthcheck: # Add health check
-      test: [ "CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p123" ]
+      RABBITMQ_DEFAULT_USER: guest
+      RABBITMQ_DEFAULT_PASS: guest
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "ping"]
       interval: 10s
       timeout: 5s
-      retries: 10
-      start_period: 30s
+      retries: 5
+    networks:
+      - easybank
+
+  message:
+    build: "./message"
+    image: "easybank/message:latest"
+    container_name: "message-ms"
+    ports:
+      - "9010:9010"
+    environment:
+      SPRING_RABBITMQ_HOST: rabbitmq
+      SPRING_RABBITMQ_PORT: 5672
+      SPRING_RABBITMQ_USERNAME: guest
+      SPRING_RABBITMQ_PASSWORD: guest
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+      gateway:
+        condition: service_healthy
+    deploy:
+      resources:
+        limits:
+          memory: 700m
     networks:
       - easybank
 

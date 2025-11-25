@@ -10,6 +10,7 @@ RUN mvn -B -DskipTests package
 # Runtime stage
 FROM eclipse-temurin:21-jre-alpine
 LABEL maintainer="easybanks.com"
+RUN apk add --no-cache curl
 WORKDIR /app
 # copy the produced jar (adjust artifact name if different)
 COPY --from=builder /build/target/account-0.0.1-SNAPSHOT.jar /app/account.jar

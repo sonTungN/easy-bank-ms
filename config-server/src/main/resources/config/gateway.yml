@@ -1,6 +1,35 @@
 server:
   port: 8072
 
+spring:
+  cloud:
+    gateway:
+      discovery:
+        locator:
+          enabled: false
+          lower-case-service-id: true
+      routes:
+        - id: account-service
+          uri: lb://ACCOUNT-SERVICE
+          predicates:
+            - Path=/easybank/account/**
+          filters:
+            - RewritePath=/easybank/account/(?<path>.*), /$\{path}
+
+        - id: loan-service
+          uri: lb://LOAN-SERVICE
+          predicates:
+            - Path=/easybank/loan/**
+          filters:
+            - RewritePath=/easybank/loan/(?<path>.*), /$\{path}
+
+        - id: card-service
+          uri: lb://CARD-SERVICE
+          predicates:
+            - Path=/easybank/card/**
+          filters:
+            - RewritePath=/easybank/card/(?<path>.*), /$\{path}
+
 eureka:
   instance:
     prefer-ip-address: true
@@ -8,4 +37,4 @@ eureka:
     fetch-registry: true
     register-with-eureka: true
     service-url:
-      defaultZone: http://localhost:8070/eureka/
+      defaultZone: http://${EUREKA_SERVICEURL:localhost}:8070/eureka/

@@ -10,4 +10,5 @@ import java.util.List;
 public interface IAccountService {
     List<Account> getAllAccounts();
     void createAccount(CustomerDto customerDto);
+    Boolean updateCommunicationStatus(Long accountNumber);
 }

@@ -1,0 +1,28 @@
+server:
+  port: 9010
+
+spring:
+  application:
+    name: message
+
+  cloud:
+    function:
+      # Config to unify 2 different functions to execute as the single logical unit with endpoint "emailsms"
+      # starter-function-web will expose these events as the REST Api with endpoint (shown above)
+      definition: email|sms
+
+    stream:
+      bindings:
+        emailsms-in-0:
+          destination: topic-in
+          group: ${spring.application.name}
+
+        emailsms-out-0:
+          destination: topic-out
+
+  rabbitmq:
+    host: ${SPRING_RABBITMQ_HOST:localhost}
+    port: ${SPRING_RABBITMQ_PORT:5672}
+    username: ${SPRING_RABBITMQ_USERNAME:guest}
+    password: ${SPRING_RABBITMQ_PASSWORD:guest}
+    connection-timeout: 10s

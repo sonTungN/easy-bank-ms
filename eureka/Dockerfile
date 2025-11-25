@@ -13,5 +13,6 @@ LABEL maintainer="easybanks.com"
 RUN apk add --no-cache curl
 WORKDIR /app
 # copy the produced jar (adjust artifact name if different)
-COPY --from=builder /build/target/loan-0.0.1-SNAPSHOT.jar /app/loan.jar
-ENTRYPOINT ["java", "-jar", "/app/loan.jar"]
+COPY --from=builder /build/target/eureka-0.0.1-SNAPSHOT.jar /app/eureka.jar
+ENTRYPOINT ["java", "-jar", "/app/eureka.jar"]
+

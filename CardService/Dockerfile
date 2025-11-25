@@ -10,7 +10,8 @@ RUN mvn -B -DskipTests package
 # Runtime stage
 FROM eclipse-temurin:21-jre-alpine
 LABEL maintainer="easybanks.com"
+RUN apk add --no-cache curl
 WORKDIR /app
 # copy the produced jar (adjust artifact name if different)
-COPY --from=builder /build/target/CardService-0.0.1-SNAPSHOT.jar /app/CardService.jar
-ENTRYPOINT ["java", "-jar", "/app/CardService.jar"]
+COPY --from=builder /build/target/card-0.0.1-SNAPSHOT.jar /app/card.jar
+ENTRYPOINT ["java", "-jar", "/app/card.jar"]
